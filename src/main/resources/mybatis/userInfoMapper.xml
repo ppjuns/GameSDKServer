@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ppjun.game.dao.mapper.UserInfoMapper">
+
+
+    <sql id="Column_list">user_name,user_img,user_token,user_level,user_sex,user_openid</sql>
+
+
+    <resultMap id="ListTest" type="com.ppjun.game.entity.GameInfo">
+
+        <result column="user_name" property="userName"/>
+        <result column="user_img" property="userImg"/>
+        <result column="user_token" property="userToken"/>
+        <result column="user_level" property="userLevel"/>
+        <result column="user_sex" property="userSex"/>
+        <result column="user_openid" property="userOpenId"/>
+    </resultMap>
+
+
+    <select id="getUserByOpenId" parameterType="String" resultMap="ListTest">
+        SELECT
+        <include refid="Column_list"/>
+        FROM user_list WHERE user_openid= #{userOpenId}
+    </select>
+
+
+    <select id="insertUser" parameterType="com.ppjun.game.entity.UserInfo">
+
+        INSERT INTO user_list (<include refid="Column_list"/>)
+        values (#{userName},#{userImg},#{userToken},#{userLevel}
+        ,#{userSex},#{userOpenId})
+    </select>
+
+
+
+</mapper>

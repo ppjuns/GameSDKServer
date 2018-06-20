@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ppjun.game.dao.mapper.DeviceInfoMapper">
+    <sql id="Column_list">
+platform,model,brand,imei,createTime
+    </sql>
+
+    <resultMap id="ListTest" type="com.ppjun.game.entity.GameInfo">
+        <id column="id" property="id"/>
+        <result column="device_platform" property="platform"/>
+        <result column="device_model" property="model"/>
+        <result column="device_brand" property="brand"/>
+        <result column="device_imei" property="imei"/>
+        <result column="device_time" property="createTime"/>
+    </resultMap>
+
+
+    <select id="insertDevice" parameterType="com.ppjun.game.entity.DeviceInfo">
+        INSERT INTO device_list (<include refid="Column_list"/>)
+        VALUES (#{platform},#{model},#{brand},#{imei},#{createTime})
+    </select>
+
+    <select id="getDeviceByIMEI" parameterType="String" resultMap="ListTest">
+        SELECT
+        <include refid="Column_list"/>
+        FROM device_list WHERE device_imei= #{imei}
+    </select>
+</mapper>
