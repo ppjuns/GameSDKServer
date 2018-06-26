@@ -6,6 +6,7 @@ data class DeviceInfo(
         val model: String="",
         val brand: String="",
         val imei: String="",
-        val createTime: String=""
+        val createTime: String="",
+        val gameId: String = ""
         )
 

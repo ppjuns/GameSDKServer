@@ -4,7 +4,7 @@
 
 <mapper namespace="com.ppjun.game.dao.mapper.GameInfoMapper">
     <sql id="Column_list">
-        id,game_name,app_id,app_key
+        game_name,app_id,app_key
     </sql>
 
 
@@ -37,10 +37,13 @@
         FROM game_list
     </select>
 
-    <select id="insertGame" parameterType="com.ppjun.game.entity.GameInfo">
+    <insert id="insertGame" parameterType="com.ppjun.game.entity.GameInfo">
+        <selectKey resultType="java.lang.Integer" order="AFTER"  keyColumn="id"  >
+            SELECT LAST_INSERT_ID() AS id
+        </selectKey>
         INSERT INTO game_list (<include refid="Column_list"/>)
         VALUES (#{gameName},#{appId},#{appKey})
-    </select>
+    </insert>
     
     
     <select id="getByAppId" resultMap="ListTest" parameterType="String"  >

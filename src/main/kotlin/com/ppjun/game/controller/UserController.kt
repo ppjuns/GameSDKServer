@@ -41,6 +41,7 @@ class UserController {
         val userImg = map["user_img"]
         val userSex = map["user_sex"]
 
+
         if (openId.isNullOrEmpty()) {
             return Response(ERROR_CODE, ERROR_OPENID_LOGIN, "")
         }

@@ -8,6 +8,7 @@ import com.ppjun.game.base.Constant.Companion.ERROR_REPECT_ADD
 import com.ppjun.game.base.Constant.Companion.SUCCESS_ADD
 import com.ppjun.game.base.Constant.Companion.SUCCESS_CODE
 import com.ppjun.game.base.Constant.Companion.SUCCESS_INIT
+import com.ppjun.game.entity.DeviceInfo
 import com.ppjun.game.entity.GameInfo
 import com.ppjun.game.entity.Response
 import com.ppjun.game.service.DeviceService
@@ -60,6 +61,7 @@ class InitController {
         }
     }
 
+
     @PostMapping("/game/add")
     fun addGame(@RequestParam map: HashMap<String, String>)
             : Response {
@@ -79,13 +81,16 @@ class InitController {
         if (gameService.getGameByName(requireNotNull(gameName)).isNotEmpty()) {
             return Response(ERROR_CODE, ERROR_REPECT_ADD, "")
         }
-        gameService.insertGame(GameInfo(1,requireNotNull(gameName), requireNotNull(appId),
+        gameService.insertGame(GameInfo(1, requireNotNull(gameName), requireNotNull(appId),
                 requireNotNull(appKey)))
 
         return Response(SUCCESS_CODE, SUCCESS_ADD, "")
     }
 
 
+    /**
+     * 添加设备接口
+     */
 
     @PostMapping("/device/init")
     fun addDevice(@RequestParam map: HashMap<String, String>): Response {
@@ -108,35 +113,37 @@ class InitController {
         if (brand.isNullOrEmpty()) {
             return Response(ERROR_CODE, "brand 不能为空", "")
         }
+        val gameList = gameService.getGameById(appId!!)
+        if (gameList.isEmpty()) {
+            return Response(ERROR_CODE, "没找到对应游戏", "")
+        }
+        //先查询再添加
+        val deviceServiceList = deviceService.getDeviceByIMEI(appId, imei!!)
 
-        //先查询在添加
-        val deviceServiceList = deviceService.getDeviceByIMEI(appId!!,imei!!)
-
-        return  if (deviceServiceList.isEmpty()) {
+        return if (deviceServiceList.isEmpty()) {
             val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
             val date = sdf.format(System.currentTimeMillis())
-//            deviceService.insertDevice(DeviceInfo(platform!!, model!!, brand!!, imei,
-//                    date,appId))
-             Response(SUCCESS_CODE, "添加成功", "")
-        }else{
-             Response(SUCCESS_CODE, "已添加", "")
+            deviceService.insertDevice(DeviceInfo(1, platform!!, model!!, brand!!, imei,
+                    date, gameList[0].gId.toString()))
+            Response(SUCCESS_CODE, "添加成功", "")
+        } else {
+            Response(SUCCESS_CODE, "已添加", "")
         }
 
     }
-
 
 
     //查询有用户的游戏
     @PostMapping("/game")
     fun getGame(@RequestParam map: HashMap<String, String>): Response {
         val appId = map["app_id"]
-        val game= gameService.getByAppId(appId!!)
-      if(game!=null){
-              logger.info(game.gameName)
-              logger.info(game.users.size.toString())
-      }else{
+        val game = gameService.getByAppId(appId!!)
+        if (game != null) {
+            logger.info(game.gameName)
+            logger.info(game.users.size.toString())
+        } else {
 
-      }
+        }
 
         return Response(SUCCESS_CODE, "", "")
     }

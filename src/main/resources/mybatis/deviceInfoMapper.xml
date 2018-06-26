@@ -3,26 +3,26 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.ppjun.game.dao.mapper.DeviceInfoMapper">
-    <sql id="Column_list">
-id,platform,model,brand,imei,createTime
-    </sql>
+    <sql id="Column_list">device_platform,device_model,device_brand,device_imei,device_time,game_id</sql>
 
 
-    <resultMap id="ListTest" type="com.ppjun.game.entity.GameInfo">
+    <resultMap id="ListTest" type="com.ppjun.game.entity.DeviceInfo">
         <id column="id" property="dId"/>
         <result column="device_platform" property="platform"/>
         <result column="device_model" property="model"/>
         <result column="device_brand" property="brand"/>
         <result column="device_imei" property="imei"/>
         <result column="device_time" property="createTime"/>
-
+        <result column="game_id" property="gameId"/>
     </resultMap>
 
 
-    <select id="insertDevice" parameterType="com.ppjun.game.entity.DeviceInfo">
-        INSERT INTO device_list (<include refid="Column_list"/>)
-        VALUES (#{platform},#{model},#{brand},#{imei},#{createTime})
-    </select>
+    <insert id="insertDevice" parameterType="com.ppjun.game.entity.DeviceInfo">
+        <selectKey resultType="java.lang.Integer" order="AFTER"  keyColumn="id"  >
+            SELECT LAST_INSERT_ID() AS id
+        </selectKey>
+        INSERT INTO device_list (<include refid="Column_list"/>)VALUES (#{platform},#{model},#{brand},#{imei},#{createTime},#{gameId})
+    </insert>
 
     <select id="getDeviceByIMEI" parameterType="String" resultMap="ListTest">
         SELECT
@@ -34,7 +34,7 @@ id,platform,model,brand,imei,createTime
         AND
         d.game_id = g.id
         AND
-
+        d.device_imei= #{imei}
     </select>
 
 

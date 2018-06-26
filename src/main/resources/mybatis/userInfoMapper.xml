@@ -5,7 +5,7 @@
 <mapper namespace="com.ppjun.game.dao.mapper.UserInfoMapper">
 
 
-    <sql id="Column_list">id,user_name,user_img,user_token,user_level,user_sex,user_openid,game_id</sql>
+    <sql id="Column_list">user_name,user_img,user_token,user_level,user_sex,user_openid,game_id</sql>
 
     <resultMap id="ListTest" type="com.ppjun.game.entity.UserInfo">
         <id column="id" property="uId"/>
@@ -16,8 +16,6 @@
         <result column="user_sex" property="userSex"/>
         <result column="user_openid" property="userOpenId"/>
         <result column="game_id" property="gameId"/>
-
-
     </resultMap>
 
 
@@ -28,12 +26,18 @@
     </select>
 
 
-    <select id="insertUser" parameterType="com.ppjun.game.entity.UserInfo">
-        INSERT INTO user_list (<include refid="Column_list"/>)values (#{userName},#{userImg},#{userToken},#{userLevel},#{userSex},#{userOpenId},#{gameId})
-    </select>
+    <!--<select id="insertUser" parameterType="com.ppjun.game.entity.UserInfo">-->
+        <!--INSERT INTO user_list (<include refid="Column_list"/>)values (#{userName},#{userImg},#{userToken},#{userLevel},#{userSex},#{userOpenId},#{gameId})-->
+    <!--</select>-->
 
+    <insert id="insertUser"   parameterType="com.ppjun.game.entity.UserInfo">
+        <selectKey resultType="java.lang.Integer" order="AFTER"  keyColumn="id"  >
+          SELECT LAST_INSERT_ID() AS id
+        </selectKey>
+        INSERT INTO user_list (<include refid="Column_list"/>) values (#{userName},#{userImg},#{userToken},#{userLevel},#{userSex},#{userOpenId},#{gameId})
+    </insert>
 
-    <select id="getUserByAppId" resultMap="ListTest" parameterType="String"  >
+    <select id="getUserByAppId" resultMap="ListTest" parameterType="String" >
        SELECT
         g.*,u.*
         FROM
@@ -45,6 +49,8 @@
         AND
         u.user_openid=#{openId}
     </select>
+    
+
 
     <select id="getUserByToken" resultMap="ListTest" parameterType="String"  >
        SELECT
