@@ -7,6 +7,8 @@ data class UserInfo(val uId: Int = 0,
                     val userLevel: String = "",
                     val userSex: String = "",
                     val userOpenId: String = "",
-                    val gameId: String = ""
+                    val gameId: String = "",
+                    val platform:String=""
+
 
 )

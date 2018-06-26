@@ -12,12 +12,14 @@ import com.ppjun.game.entity.Response
 import com.ppjun.game.entity.UserInfo
 import com.ppjun.game.service.GameService
 import com.ppjun.game.service.UserService
+import com.ppjun.game.util.MD5Util
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
+import javax.rmi.CORBA.Util
 
 
 @RestController
@@ -40,7 +42,7 @@ class UserController {
         val userName = map["user_name"]
         val userImg = map["user_img"]
         val userSex = map["user_sex"]
-
+        val platform = map["platform"]
 
         if (openId.isNullOrEmpty()) {
             return Response(ERROR_CODE, ERROR_OPENID_LOGIN, "")
@@ -54,6 +56,9 @@ class UserController {
         if (userSex.isNullOrEmpty()) {
             return Response(ERROR_CODE, ERROR_SEX_LOGIN, "")
         }
+        if (platform.isNullOrEmpty()) {
+            return Response(ERROR_CODE, "platform 为空", "")
+        }
         val userList = userService.getUserByAppId(appId!!, openId!!)
 
         return if (userList.isEmpty()) {
@@ -64,9 +69,13 @@ class UserController {
             if (gameList.isEmpty()) {
                 return Response(ERROR_CODE, "没找到对应游戏", "")
             }
-            val userToken = System.currentTimeMillis().toString() + appId
+
+
+            logger.info("gameList[0].gId=" + gameList[0].gId.toString())
+            val userToken = MD5Util.getMD5(System.currentTimeMillis().toString() + appId + userName + userImg)
+
             val user = UserInfo(1, userName!!, userImg!!, userToken,
-                    "0", userSex!!, openId, gameList[0].gId.toString())
+                    "0", userSex!!, openId, gameList[0].gId.toString(), platform!!)
             userService.insertUser(user)
             Response(SUCCESS_CODE, SUCCESS_LOGIN, user)
         } else {
@@ -76,7 +85,6 @@ class UserController {
         }
 
     }
-
 
 
     /**
@@ -112,8 +120,6 @@ class UserController {
             return Response(SUCCESS_CODE, "有效token", "")
         }
     }
-
-
 
 
 }

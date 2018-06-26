@@ -28,4 +28,5 @@ class GameDaoImpl constructor(var sqlSessionFactory: DefaultSqlSessionFactory) :
         sqlSession.commit()
         sqlSession.close()
     }
+
 }

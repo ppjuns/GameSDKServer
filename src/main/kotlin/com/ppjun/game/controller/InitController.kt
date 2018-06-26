@@ -13,6 +13,7 @@ import com.ppjun.game.entity.GameInfo
 import com.ppjun.game.entity.Response
 import com.ppjun.game.service.DeviceService
 import com.ppjun.game.service.GameService
+import com.ppjun.game.util.MD5Util
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration
@@ -66,24 +67,17 @@ class InitController {
     fun addGame(@RequestParam map: HashMap<String, String>)
             : Response {
         val gameName = map["game_name"]
-        val appId = map["app_id"]
-        val appKey = map["app_key"]
-
         if (gameName.isNullOrEmpty()) {
             return Response(ERROR_CODE, "gameName 不能为空", "")
         }
-        if (appId.isNullOrEmpty()) {
-            return Response(ERROR_CODE, "appId 不能为空", "")
-        }
-        if (appKey.isNullOrEmpty()) {
-            return Response(ERROR_CODE, "appKey 不能为空", "")
-        }
+        val appId = MD5Util.getMD5(gameName)
+        val appKey = MD5Util.getMD5(MD5Util.getMD5(gameName))
+
         if (gameService.getGameByName(requireNotNull(gameName)).isNotEmpty()) {
             return Response(ERROR_CODE, ERROR_REPECT_ADD, "")
         }
-        gameService.insertGame(GameInfo(1, requireNotNull(gameName), requireNotNull(appId),
-                requireNotNull(appKey)))
-
+        gameService.insertGame(GameInfo(1, requireNotNull(gameName), requireNotNull("appId$appId"),
+                requireNotNull("appKey$appKey")))
         return Response(SUCCESS_CODE, SUCCESS_ADD, "")
     }
 
@@ -123,8 +117,9 @@ class InitController {
         return if (deviceServiceList.isEmpty()) {
             val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
             val date = sdf.format(System.currentTimeMillis())
+            logger.info("gameList[0].gId.toString()="+gameList[0].gId.toString())
             deviceService.insertDevice(DeviceInfo(1, platform!!, model!!, brand!!, imei,
-                    date, gameList[0].gId.toString()))
+                    date, 1.toString()))
             Response(SUCCESS_CODE, "添加成功", "")
         } else {
             Response(SUCCESS_CODE, "已添加", "")
@@ -147,4 +142,5 @@ class InitController {
 
         return Response(SUCCESS_CODE, "", "")
     }
+
 }

@@ -3,11 +3,8 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.ppjun.game.dao.mapper.GameInfoMapper">
-    <sql id="Column_list">
-        game_name,app_id,app_key
-    </sql>
-
-
+    <sql id="Column_list">id,game_name,app_id,app_key</sql>
+    <sql id="Column_add_list">game_name,app_id,app_key</sql>
     <resultMap id="ListTest" type="com.ppjun.game.entity.GameInfo">
         <id column="id" property="gId"/>
         <result column="game_name" property="gameName"/>
@@ -15,9 +12,7 @@
         <result column="app_key" property="appKey"/>
         <!--coloection 一对多 -->
         <!--association 一对一 -->
-
     </resultMap>
-
 
     <select id="getGameById" parameterType="String" resultMap="ListTest">
         SELECT
@@ -41,11 +36,10 @@
         <selectKey resultType="java.lang.Integer" order="AFTER"  keyColumn="id"  >
             SELECT LAST_INSERT_ID() AS id
         </selectKey>
-        INSERT INTO game_list (<include refid="Column_list"/>)
+        INSERT INTO game_list (<include refid="Column_add_list"/>)
         VALUES (#{gameName},#{appId},#{appKey})
     </insert>
-    
-    
+
     <select id="getByAppId" resultMap="ListTest" parameterType="String"  >
        SELECT
         g.*,u.*

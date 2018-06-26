@@ -3,7 +3,8 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.ppjun.game.dao.mapper.DeviceInfoMapper">
-    <sql id="Column_list">device_platform,device_model,device_brand,device_imei,device_time,game_id</sql>
+    <sql id="Column_list">id,device_platform,device_model,device_brand,device_imei,device_time,game_id</sql>
+    <sql id="Column_add_list">device_platform,device_model,device_brand,device_imei,device_time,game_id</sql>
 
 
     <resultMap id="ListTest" type="com.ppjun.game.entity.DeviceInfo">
@@ -16,12 +17,12 @@
         <result column="game_id" property="gameId"/>
     </resultMap>
 
-
+<!--//  useGeneratedKeys="true" keyColumn="id" keyProperty="dId" -->
     <insert id="insertDevice" parameterType="com.ppjun.game.entity.DeviceInfo">
         <selectKey resultType="java.lang.Integer" order="AFTER"  keyColumn="id"  >
             SELECT LAST_INSERT_ID() AS id
         </selectKey>
-        INSERT INTO device_list (<include refid="Column_list"/>)VALUES (#{platform},#{model},#{brand},#{imei},#{createTime},#{gameId})
+        INSERT INTO device_list (<include refid="Column_add_list"/>)VALUES (#{platform},#{model},#{brand},#{imei},#{createTime},#{gameId})
     </insert>
 
     <select id="getDeviceByIMEI" parameterType="String" resultMap="ListTest">
