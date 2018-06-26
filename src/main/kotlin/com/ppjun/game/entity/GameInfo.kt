@@ -1,7 +1,10 @@
 package com.ppjun.game.entity
 
-data class GameInfo(val gameName:String,
-                    val appId :String,
-                    val appKey:String,
-                    val users:List<UserInfo>,
-                    val devices:List<DeviceInfo>)
+data class GameInfo(
+      var gId: Int=0,
+      var gameName: String="",
+      var appId: String="",
+      var appKey: String="",
+      var users: ArrayList<UserInfo> = arrayListOf(),
+      var devices: ArrayList<DeviceInfo> = arrayListOf()
+)

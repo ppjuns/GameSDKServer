@@ -5,34 +5,58 @@
 <mapper namespace="com.ppjun.game.dao.mapper.UserInfoMapper">
 
 
-    <sql id="Column_list">user_name,user_img,user_token,user_level,user_sex,user_openid</sql>
+    <sql id="Column_list">id,user_name,user_img,user_token,user_level,user_sex,user_openid,game_id</sql>
 
-
-    <resultMap id="ListTest" type="com.ppjun.game.entity.GameInfo">
-
+    <resultMap id="ListTest" type="com.ppjun.game.entity.UserInfo">
+        <id column="id" property="uId"/>
         <result column="user_name" property="userName"/>
         <result column="user_img" property="userImg"/>
         <result column="user_token" property="userToken"/>
         <result column="user_level" property="userLevel"/>
         <result column="user_sex" property="userSex"/>
         <result column="user_openid" property="userOpenId"/>
+        <result column="game_id" property="gameId"/>
+
+
     </resultMap>
 
 
     <select id="getUserByOpenId" parameterType="String" resultMap="ListTest">
         SELECT
         <include refid="Column_list"/>
-        FROM user_list WHERE user_openid= #{userOpenId}
+        FROM user_list WHERE user_openid= #{userOpenId} and game_id= #{gameAppId}
     </select>
 
 
     <select id="insertUser" parameterType="com.ppjun.game.entity.UserInfo">
-
-        INSERT INTO user_list (<include refid="Column_list"/>)
-        values (#{userName},#{userImg},#{userToken},#{userLevel}
-        ,#{userSex},#{userOpenId})
+        INSERT INTO user_list (<include refid="Column_list"/>)values (#{userName},#{userImg},#{userToken},#{userLevel},#{userSex},#{userOpenId},#{gameId})
     </select>
 
 
+    <select id="getUserByAppId" resultMap="ListTest" parameterType="String"  >
+       SELECT
+        g.*,u.*
+        FROM
+        game_list g,user_list u
+        WHERE
+        g.app_id= #{appId}
+        AND
+        u.game_id = g.id
+        AND
+        u.user_openid=#{openId}
+    </select>
+
+    <select id="getUserByToken" resultMap="ListTest" parameterType="String"  >
+       SELECT
+        g.*,u.*
+        FROM
+        game_list g,user_list u
+        WHERE
+        g.app_id= #{appId}
+        AND
+        u.game_id = g.id
+        AND
+        u.user_token=#{token}
+    </select>
 
 </mapper>

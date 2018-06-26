@@ -4,16 +4,18 @@
 
 <mapper namespace="com.ppjun.game.dao.mapper.DeviceInfoMapper">
     <sql id="Column_list">
-platform,model,brand,imei,createTime
+id,platform,model,brand,imei,createTime
     </sql>
 
+
     <resultMap id="ListTest" type="com.ppjun.game.entity.GameInfo">
-        <id column="id" property="id"/>
+        <id column="id" property="dId"/>
         <result column="device_platform" property="platform"/>
         <result column="device_model" property="model"/>
         <result column="device_brand" property="brand"/>
         <result column="device_imei" property="imei"/>
         <result column="device_time" property="createTime"/>
+
     </resultMap>
 
 
@@ -24,7 +26,19 @@ platform,model,brand,imei,createTime
 
     <select id="getDeviceByIMEI" parameterType="String" resultMap="ListTest">
         SELECT
-        <include refid="Column_list"/>
-        FROM device_list WHERE device_imei= #{imei}
+        g.*,d.*
+        FROM
+        game_list g,device_list d
+        WHERE
+        g.app_id= #{appId}
+        AND
+        d.game_id = g.id
+        AND
+
     </select>
+
+
+
+
+
 </mapper>

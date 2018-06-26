@@ -2,11 +2,15 @@ package com.ppjun.game.service
 
 import com.ppjun.game.dao.mapper.GameInfoMapper
 import com.ppjun.game.entity.GameInfo
+import com.ppjun.game.entity.UserInfo
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 
 @Service
 class GameService : GameInfoMapper {
+    override fun getByAppId(appId: String):GameInfo{
+        return gameInfoMapper.getByAppId(appId)
+    }
 
     @Autowired
     lateinit var gameInfoMapper: GameInfoMapper
@@ -26,4 +30,6 @@ class GameService : GameInfoMapper {
     override fun insertGame(game: GameInfo) {
         gameInfoMapper.insertGame(game)
     }
+
+
 }

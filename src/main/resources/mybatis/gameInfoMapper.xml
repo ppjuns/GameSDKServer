@@ -4,14 +4,18 @@
 
 <mapper namespace="com.ppjun.game.dao.mapper.GameInfoMapper">
     <sql id="Column_list">
-        game_name,app_id,app_key
+        id,game_name,app_id,app_key
     </sql>
 
+
     <resultMap id="ListTest" type="com.ppjun.game.entity.GameInfo">
-        <id column="id" property="id"/>
+        <id column="id" property="gId"/>
         <result column="game_name" property="gameName"/>
         <result column="app_id" property="appId"/>
         <result column="app_key" property="appKey"/>
+        <!--coloection 一对多 -->
+        <!--association 一对一 -->
+
     </resultMap>
 
 
@@ -37,4 +41,19 @@
         INSERT INTO game_list (<include refid="Column_list"/>)
         VALUES (#{gameName},#{appId},#{appKey})
     </select>
+    
+    
+    <select id="getByAppId" resultMap="ListTest" parameterType="String"  >
+       SELECT
+        g.*,u.*
+        FROM
+        game_list g,user_list u
+        WHERE
+        g.app_id= #{appId}
+        AND
+        u.game_id = g.id
+    </select>
+
+
+    
 </mapper>

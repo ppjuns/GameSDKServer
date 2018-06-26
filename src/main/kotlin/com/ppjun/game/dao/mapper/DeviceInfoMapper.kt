@@ -7,5 +7,6 @@ import org.apache.ibatis.annotations.Mapper
 @Mapper
 interface DeviceInfoMapper {
     fun insertDevice(device:DeviceInfo)
-    fun getDeviceByIMEI(imei:String):List<DeviceInfo>
+    fun getDeviceByIMEI(appId:String,imei:String):List<DeviceInfo>
+
 }
