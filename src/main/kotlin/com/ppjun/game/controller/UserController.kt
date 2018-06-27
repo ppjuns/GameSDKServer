@@ -80,8 +80,11 @@ class UserController {
             Response(SUCCESS_CODE, SUCCESS_LOGIN, user)
         } else {
             logger.info("not empty")
-            //返回
-            Response(SUCCESS_CODE, SUCCESS_LOGIN, userList[0])
+            //刷新token并返回
+            val newToken = MD5Util.getMD5(System.currentTimeMillis().toString() + appId + userName + userImg)
+            userService.updateUserToken(openId, newToken)
+            val newUserList = userService.getUserByAppId(appId!!, openId!!)
+            Response(SUCCESS_CODE, SUCCESS_LOGIN, newUserList[0])
         }
 
     }

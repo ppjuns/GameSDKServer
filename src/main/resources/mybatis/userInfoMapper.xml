@@ -29,17 +29,18 @@
 
 
     <!--<select id="insertUser" parameterType="com.ppjun.game.entity.UserInfo">-->
-        <!--INSERT INTO user_list (<include refid="Column_list"/>)values (#{userName},#{userImg},#{userToken},#{userLevel},#{userSex},#{userOpenId},#{gameId})-->
+    <!--INSERT INTO user_list (<include refid="Column_list"/>)values (#{userName},#{userImg},#{userToken},#{userLevel},#{userSex},#{userOpenId},#{gameId})-->
     <!--</select>-->
 
-    <insert id="insertUser"   parameterType="com.ppjun.game.entity.UserInfo">
-        <selectKey resultType="java.lang.Integer" order="AFTER"  keyColumn="id"  >
-          SELECT LAST_INSERT_ID() AS id
+    <insert id="insertUser" parameterType="com.ppjun.game.entity.UserInfo">
+        <selectKey resultType="java.lang.Integer" order="AFTER" keyColumn="id">
+            SELECT LAST_INSERT_ID() AS id
         </selectKey>
-        INSERT INTO user_list (<include refid="Column_add_list"/>) values (#{userName},#{userImg},#{userToken},#{userLevel},#{userSex},#{userOpenId},#{gameId},#{platform})
+        INSERT INTO user_list (<include refid="Column_add_list"/>) values
+        (#{userName},#{userImg},#{userToken},#{userLevel},#{userSex},#{userOpenId},#{gameId},#{platform})
     </insert>
 
-    <select id="getUserByAppId" resultMap="ListTest" parameterType="String" >
+    <select id="getUserByAppId" resultMap="ListTest" parameterType="String">
        SELECT
         g.*,u.*
         FROM
@@ -51,7 +52,6 @@
         AND
         u.user_openid=#{openId}
     </select>
-    
 
 
     <select id="getUserByToken" resultMap="ListTest" parameterType="String">
@@ -66,5 +66,10 @@
         AND
         u.user_token=#{token}
     </select>
+    <update id="updateUserToken" parameterType="String">
+        UPDATE  user_list
+        set user_list.user_token=#{newToken}
+        where user_list.user_openid=#{openId}
+    </update>
 
 </mapper>

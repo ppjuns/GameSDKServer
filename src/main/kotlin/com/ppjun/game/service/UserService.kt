@@ -8,6 +8,11 @@ import org.springframework.stereotype.Service
 
 @Service
 class UserService : UserInfoMapper {
+    override fun updateUserToken(openId: String, newToken: String) {
+        return userInfoMapper.updateUserToken(openId,newToken)
+    }
+
+
     override fun getUserByToken(appId: String, token: String): List<UserInfo> {
        return  userInfoMapper.getUserByToken(appId,token)
     }
