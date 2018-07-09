@@ -3,13 +3,14 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.ppjun.game.dao.mapper.GameInfoMapper">
-    <sql id="Column_list">id,game_name,app_id,app_key</sql>
-    <sql id="Column_add_list">game_name,app_id,app_key</sql>
+    <sql id="Column_list">id,game_name,app_id,app_key,game_time</sql>
+    <sql id="Column_add_list">game_name,app_id,app_key,game_time</sql>
     <resultMap id="ListTest" type="com.ppjun.game.entity.GameInfo">
         <id column="id" property="gId"/>
         <result column="game_name" property="gameName"/>
         <result column="app_id" property="appId"/>
         <result column="app_key" property="appKey"/>
+        <result column="game_time" property="gameTime"/>
         <!--coloection 一对多 -->
         <!--association 一对一 -->
     </resultMap>
@@ -33,24 +34,25 @@
     </select>
 
     <insert id="insertGame" parameterType="com.ppjun.game.entity.GameInfo">
-        <selectKey resultType="java.lang.Integer" order="AFTER"  keyColumn="id"  >
+        <selectKey resultType="java.lang.Integer" order="AFTER" keyColumn="id">
             SELECT LAST_INSERT_ID() AS id
         </selectKey>
         INSERT INTO game_list (<include refid="Column_add_list"/>)
-        VALUES (#{gameName},#{appId},#{appKey})
+        VALUES (#{gameName},#{appId},#{appKey},#{gameTime})
     </insert>
 
-    <select id="getByAppId" resultMap="ListTest" parameterType="String"  >
-       SELECT
-        g.*,u.*
-        FROM
-        game_list g,user_list u
-        WHERE
-        g.app_id= #{appId}
+    <update id="modifyGame" parameterType="com.ppjun.game.entity.GameInfo">
+        UPDATE
+        game_list
+        SET
+        game_list.game_name = #{newName}
         AND
-        u.game_id = g.id
-    </select>
+        game_list.game_time = #{modifyTime}
+        WHERE
+        game_list.id = #{gId}
 
 
-    
+    </update>
+
+
 </mapper>

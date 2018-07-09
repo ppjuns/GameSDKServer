@@ -8,9 +8,7 @@ import org.springframework.stereotype.Service
 
 @Service
 class GameService : GameInfoMapper {
-    override fun getByAppId(appId: String):GameInfo{
-        return gameInfoMapper.getByAppId(appId)
-    }
+
 
     @Autowired
     lateinit var gameInfoMapper: GameInfoMapper
@@ -29,6 +27,15 @@ class GameService : GameInfoMapper {
 
     override fun insertGame(game: GameInfo) {
         gameInfoMapper.insertGame(game)
+    }
+
+    override fun deleteGame(gId: String) {
+        gameInfoMapper.deleteGame(gId)
+    }
+
+    override fun modifyGame(gId: String, newName: String, modifyTime: String) {
+        gameInfoMapper.modifyGame(gId, newName, modifyTime)
+
     }
 
 

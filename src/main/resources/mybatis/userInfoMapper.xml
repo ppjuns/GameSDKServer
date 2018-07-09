@@ -67,9 +67,12 @@
         u.user_token=#{token}
     </select>
     <update id="updateUserToken" parameterType="String">
-        UPDATE  user_list
-        set user_list.user_token=#{newToken}
-        where user_list.user_openid=#{openId}
+        UPDATE
+        user_list
+        set
+        user_list.user_token = #{newToken}
+        where
+        user_list.user_openid = #{openId}
     </update>
 
 </mapper>

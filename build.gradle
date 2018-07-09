@@ -52,5 +52,5 @@ dependencies {
     runtime('mysql:mysql-connector-java')
     providedRuntime('org.springframework.boot:spring-boot-starter-tomcat')
     testCompile('org.springframework.boot:spring-boot-starter-test')
- //   compile group: 'com.alibaba', name: 'druid', version: '1.1.10'
+    compile group: 'com.alibaba', name: 'druid', version: '1.1.10'
 }
