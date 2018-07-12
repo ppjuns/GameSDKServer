@@ -41,18 +41,23 @@
         VALUES (#{gameName},#{appId},#{appKey},#{gameTime})
     </insert>
 
-    <update id="modifyGame" parameterType="com.ppjun.game.entity.GameInfo">
+    <update id="modifyGame" parameterType="String">
         UPDATE
         game_list
         SET
-        game_list.game_name = #{newName}
-        AND
+        game_list.game_name = #{newName},
         game_list.game_time = #{modifyTime}
         WHERE
         game_list.id = #{gId}
-
-
     </update>
+    
+    <delete id="deleteGame" parameterType="String">
+        DELETE
+        FROM
+        game_list
+        WHERE
+        game_list.id = #{gId}
+    </delete>
 
 
 </mapper>

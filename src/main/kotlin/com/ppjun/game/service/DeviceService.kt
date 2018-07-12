@@ -8,6 +8,10 @@ import org.springframework.stereotype.Service
 
 @Service
 class DeviceService :DeviceInfoMapper {
+    override fun getDeviceById(gameId: String): List<DeviceInfo> {
+        return deviceInfoMapper.getDeviceById(gameId)
+    }
+
     override fun getDeviceByIMEI(appId:String,imei: String): List<DeviceInfo> {
         return deviceInfoMapper.getDeviceByIMEI(appId,imei)
     }

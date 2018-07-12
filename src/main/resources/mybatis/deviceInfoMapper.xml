@@ -17,12 +17,13 @@
         <result column="game_id" property="gameId"/>
     </resultMap>
 
-<!--//  useGeneratedKeys="true" keyColumn="id" keyProperty="dId" -->
+    <!--//  useGeneratedKeys="true" keyColumn="id" keyProperty="dId" -->
     <insert id="insertDevice" parameterType="com.ppjun.game.entity.DeviceInfo">
-        <selectKey resultType="java.lang.Integer" order="AFTER"  keyColumn="id"  >
+        <selectKey resultType="java.lang.Integer" order="AFTER" keyColumn="id">
             SELECT LAST_INSERT_ID() AS id
         </selectKey>
-        INSERT INTO device_list (<include refid="Column_add_list"/>)VALUES (#{platform},#{model},#{brand},#{imei},#{createTime},#{gameId})
+        INSERT INTO device_list (<include refid="Column_add_list"/>)VALUES
+        (#{platform},#{model},#{brand},#{imei},#{createTime},#{gameId})
     </insert>
 
     <select id="getDeviceByIMEI" parameterType="String" resultMap="ListTest">
@@ -38,8 +39,12 @@
         d.device_imei= #{imei}
     </select>
 
-
-
+    <select id="getDeviceById" parameterType="String" resultMap="ListTest">
+        SELECT
+        <include refid="Column_list"/>
+        FROM device_list
+        WHERE device_list.game_id = #{gameId}
+    </select>
 
 
 </mapper>

@@ -8,6 +8,10 @@ import org.springframework.stereotype.Service
 
 @Service
 class UserService : UserInfoMapper {
+    override fun getUserByGameId(gameId: String): List<UserInfo> {
+        return userInfoMapper.getUserByGameId(gameId)
+    }
+
     override fun updateUserToken(openId: String, newToken: String) {
         return userInfoMapper.updateUserToken(openId,newToken)
     }

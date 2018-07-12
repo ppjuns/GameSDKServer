@@ -8,7 +8,8 @@ data class UserInfo(val uId: Int = 0,
                     val userSex: String = "",
                     val userOpenId: String = "",
                     val gameId: String = "",
-                    val platform:String=""
+                    val platform:String="",
+                    val createTime:String=""
 
 
 )

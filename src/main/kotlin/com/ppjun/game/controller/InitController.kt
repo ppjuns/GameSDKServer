@@ -32,41 +32,10 @@ class InitController {
     @Autowired
     lateinit var gameService: GameService
 
-    @Autowired
-    lateinit var deviceService: DeviceService
-
-    @Autowired
-    lateinit var adminService: AdminService
 
     @RequestMapping("/")
     fun index(): String {
         return "Hello World"
-    }
-
-
-    /**
-     * 获取全部游戏,通过admin的token获取
-     */
-
-    @PostMapping("/game/all")
-    fun allGame(@RequestParam map: HashMap<String, String>): Response {
-
-        val token = map["user_token"]
-        if (token.isNullOrEmpty()) {
-            return Response(ERROR_CODE, "token 为空", "")
-        }
-        val adminList = adminService.getAdminByToken(token!!)
-        if (adminList.isEmpty()) {
-            return Response(ERROR_CODE, "找不到游戏", "")
-        }
-        val gameList = gameService.getAllGame()
-        return if (gameList.isEmpty()) {
-            Response(SUCCESS_CODE, "无游戏", "")
-        } else {
-            Response(SUCCESS_CODE, "成功", gameList)
-        }
-
-
     }
 
     /**
@@ -91,88 +60,4 @@ class InitController {
             Response(ERROR_CODE, ERROR_INIT, "")
         }
     }
-
-
-    @PostMapping("/game/add")
-    fun addGame(@RequestParam map: HashMap<String, String>)
-            : Response {
-        val gameName = map["game_name"]
-        if (gameName.isNullOrEmpty()) {
-            return Response(ERROR_CODE, "gameName 不能为空", "")
-        }
-        val appId = MD5Util.getMD5(gameName)
-        val appKey = MD5Util.getMD5(MD5Util.getMD5(gameName))
-
-        if (gameService.getGameByName(requireNotNull(gameName)).isNotEmpty()) {
-            return Response(ERROR_CODE, ERROR_REPECT_ADD, "")
-        }
-
-        gameService.insertGame(GameInfo(1, requireNotNull(gameName), requireNotNull("appId$appId"),
-                requireNotNull("appKey$appKey"), getCurrentTime()))
-        return Response(SUCCESS_CODE, SUCCESS_ADD, "")
-    }
-
-    @PostMapping("/game/modify")
-    fun modifyGame(@RequestParam map: HashMap<String, String>): Response {
-        val gId = map["id"]
-        val gameName = map["game_name"]
-        if (gId.isNullOrEmpty()) {
-            return Response(ERROR_CODE, "id 不能为空", "")
-        }
-        if (gameName.isNullOrEmpty()) {
-            return Response(ERROR_CODE, "gameName 不能为空", "")
-        }
-        gameService.modifyGame(gId!!,gameName!!,getCurrentTime())
-    }
-
-
-    /**
-     * 添加设备接口
-     */
-
-    @PostMapping("/device/init")
-    fun addDevice(@RequestParam map: HashMap<String, String>): Response {
-
-        val appId = map["app_id"]
-        val imei = map["device_imei"]
-        val platform = map["device_platform"]
-        val model = map["device_model"]
-        val brand = map["device_brand"]
-
-        if (imei.isNullOrEmpty()) {
-            return Response(ERROR_CODE, "imei 不能为空", "")
-        }
-        if (platform.isNullOrEmpty()) {
-            return Response(ERROR_CODE, "platform 不能为空", "")
-        }
-        if (model.isNullOrEmpty()) {
-            return Response(ERROR_CODE, "model 不能为空", "")
-        }
-        if (brand.isNullOrEmpty()) {
-            return Response(ERROR_CODE, "brand 不能为空", "")
-        }
-        val gameList = gameService.getGameById(appId!!)
-        if (gameList.isEmpty()) {
-            return Response(ERROR_CODE, "没找到对应游戏", "")
-        }
-        //先查询再添加
-        val deviceServiceList = deviceService.getDeviceByIMEI(appId, imei!!)
-
-        return if (deviceServiceList.isEmpty()) {
-            logger.info("gameList[0].gId.toString()=" + gameList[0].gId.toString())
-            deviceService.insertDevice(DeviceInfo(1, platform!!, model!!, brand!!, imei,
-                    getCurrentTime(), 1.toString()))
-            Response(SUCCESS_CODE, "添加成功", "")
-        } else {
-            Response(SUCCESS_CODE, "已添加", "")
-        }
-
-    }
-
-
-    fun getCurrentTime(): String {
-        val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-        return sdf.format(System.currentTimeMillis())
-    }
-
 }

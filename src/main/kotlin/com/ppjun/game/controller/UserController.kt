@@ -1,6 +1,7 @@
 package com.ppjun.game.controller
 
 import com.ppjun.game.GameApplication
+import com.ppjun.game.base.Constant
 import com.ppjun.game.base.Constant.Companion.ERROR_CODE
 import com.ppjun.game.base.Constant.Companion.ERROR_IMG_LOGIN
 import com.ppjun.game.base.Constant.Companion.ERROR_NAME_LOGIN
@@ -10,6 +11,7 @@ import com.ppjun.game.base.Constant.Companion.SUCCESS_CODE
 import com.ppjun.game.base.Constant.Companion.SUCCESS_LOGIN
 import com.ppjun.game.entity.Response
 import com.ppjun.game.entity.UserInfo
+import com.ppjun.game.service.AdminService
 import com.ppjun.game.service.GameService
 import com.ppjun.game.service.UserService
 import com.ppjun.game.util.MD5Util
@@ -28,9 +30,12 @@ class UserController {
     val logger = LoggerFactory.getLogger(GameApplication::class.java)
     @Autowired
     lateinit var userService: UserService
+
     @Autowired
     lateinit var gameService: GameService
 
+    @Autowired
+    lateinit var adminService: AdminService
 
     /**
      * 第一次登陆成功，调用登陆接口，把用户写进数据库
@@ -124,5 +129,28 @@ class UserController {
         }
     }
 
+    /**
+     * 根据gameid
+     * 获取用户列表
+     */
 
+    @PostMapping("/user")
+    fun getUserByGameId(@RequestParam map: HashMap<String, String>): Response {
+
+        val token = map["user_token"]
+        val gameId = map["game_id"]
+        if (token.isNullOrEmpty()) {
+            return Response(Constant.ERROR_CODE, "token 为空", "")
+        }
+        if (gameId.isNullOrEmpty()) {
+            return Response(Constant.ERROR_CODE, "gameId 为空", "")
+        }
+        val adminList = adminService.getAdminByToken(token!!)
+        if (adminList.isEmpty()) {
+            return Response(Constant.ERROR_CODE, "找不到游戏", "")
+        }
+        val userList = userService.getUserByGameId(gameId!!)
+        return Response(SUCCESS_CODE, "获取成功", userList)
+
+    }
 }

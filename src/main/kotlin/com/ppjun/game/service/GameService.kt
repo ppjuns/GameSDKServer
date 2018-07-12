@@ -29,12 +29,12 @@ class GameService : GameInfoMapper {
         gameInfoMapper.insertGame(game)
     }
 
-    override fun deleteGame(gId: String) {
-        gameInfoMapper.deleteGame(gId)
+    override fun deleteGame(gId: String):Int {
+       return  gameInfoMapper.deleteGame(gId)
     }
 
-    override fun modifyGame(gId: String, newName: String, modifyTime: String) {
-        gameInfoMapper.modifyGame(gId, newName, modifyTime)
+    override fun modifyGame(gId: String, newName: String, modifyTime: String):Int {
+      return   gameInfoMapper.modifyGame(gId, newName, modifyTime)
 
     }
 

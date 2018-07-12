@@ -11,7 +11,7 @@ interface GameInfoMapper {
     fun getGameByName(name: String): List<GameInfo>
     fun getAllGame(): List<GameInfo>
     fun insertGame(game: GameInfo)
-    fun modifyGame(gId: String, newName: String, modifyTime: String)
-    fun deleteGame(gId: String)
+    fun modifyGame(gId: String, newName: String, modifyTime: String):Int
+    fun deleteGame(gId: String):Int
 
 }
