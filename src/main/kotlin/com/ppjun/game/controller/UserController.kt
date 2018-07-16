@@ -1,6 +1,5 @@
 package com.ppjun.game.controller
 
-import com.ppjun.game.GameApplication
 import com.ppjun.game.base.Constant
 import com.ppjun.game.base.Constant.Companion.ERROR_CODE
 import com.ppjun.game.base.Constant.Companion.ERROR_IMG_LOGIN
@@ -15,19 +14,16 @@ import com.ppjun.game.service.AdminService
 import com.ppjun.game.service.GameService
 import com.ppjun.game.service.UserService
 import com.ppjun.game.util.MD5Util
-import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
-import javax.rmi.CORBA.Util
 
 
 @RestController
 @EnableAutoConfiguration
 class UserController {
-    val logger = LoggerFactory.getLogger(GameApplication::class.java)
     @Autowired
     lateinit var userService: UserService
 
@@ -67,7 +63,7 @@ class UserController {
         val userList = userService.getUserByAppId(appId!!, openId!!)
 
         return if (userList.isEmpty()) {
-            logger.info("empty")
+
             //add
             val gameList = gameService.getGameById(appId)
 
@@ -76,7 +72,6 @@ class UserController {
             }
 
 
-            logger.info("gameList[0].gId=" + gameList[0].gId.toString())
             val userToken = MD5Util.getMD5(System.currentTimeMillis().toString() + appId + userName + userImg)
 
             val user = UserInfo(1, userName!!, userImg!!, userToken,
@@ -84,7 +79,7 @@ class UserController {
             userService.insertUser(user)
             Response(SUCCESS_CODE, SUCCESS_LOGIN, user)
         } else {
-            logger.info("not empty")
+
             //刷新token并返回
             val newToken = MD5Util.getMD5(System.currentTimeMillis().toString() + appId + userName + userImg)
             userService.updateUserToken(openId, newToken)
