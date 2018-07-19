@@ -1,7 +1,6 @@
-package com.ppjun.game.dao.mapper
+package com.ppjun.game.service.mapper
 
 import com.ppjun.game.entity.AdminInfo
-import com.ppjun.game.entity.UserInfo
 import org.apache.ibatis.annotations.Mapper
 
 

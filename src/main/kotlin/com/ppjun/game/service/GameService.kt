@@ -1,8 +1,7 @@
 package com.ppjun.game.service
 
-import com.ppjun.game.dao.mapper.GameInfoMapper
+import com.ppjun.game.service.mapper.GameInfoMapper
 import com.ppjun.game.entity.GameInfo
-import com.ppjun.game.entity.UserInfo
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 

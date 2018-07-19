@@ -1,15 +1,17 @@
 package com.ppjun.game.entity
 
-data class PayInfo(val oId: Int,
-                   val payWay: String,
-                   val createTime: String,
-                   val payTime: String,
-                   val tradeNo: String,
-                   val productPrice: String,
-                   val payPrice: String,
-                   val productName: String,
-                   val userId: String,
-                   val gameId: String,
-                   val payStatus: String,
-                   val gameOrderNo: String
+//userId, gameId, productName, productPrice, gameOrderNo, createTime
+data class PayInfo(
+        val userId: String = "",
+        val gameId: String = "",
+        val productName: String = "",
+        val productPrice: String = "",
+        val gameOrderNo: String = "",
+        val createTime: String = "",
+        val pId: Int = 0,
+        val payWay: String = "",
+        val payTime: String = "",
+        val tradeNo: String = "",
+        val payPrice: String = "",
+        val payStatus: String = ""
 )

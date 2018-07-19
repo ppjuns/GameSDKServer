@@ -1,6 +1,6 @@
 package com.ppjun.game.service
 
-import com.ppjun.game.dao.mapper.UserInfoMapper
+import com.ppjun.game.service.mapper.UserInfoMapper
 import com.ppjun.game.entity.UserInfo
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service

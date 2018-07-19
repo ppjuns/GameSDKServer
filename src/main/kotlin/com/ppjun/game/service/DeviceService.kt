@@ -1,6 +1,6 @@
 package com.ppjun.game.service
 
-import com.ppjun.game.dao.mapper.DeviceInfoMapper
+import com.ppjun.game.service.mapper.DeviceInfoMapper
 import com.ppjun.game.entity.DeviceInfo
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service

@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.ppjun.game.dao.mapper.UserInfoMapper">
+<mapper namespace="com.ppjun.game.service.mapper.UserInfoMapper">
 
 
     <sql id="Column_list">id,user_name,user_img,user_token,user_level,user_sex,user_openid,game_id,user_platform,user_time</sql>

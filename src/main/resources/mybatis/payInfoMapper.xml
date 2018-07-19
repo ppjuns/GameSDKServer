@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ppjun.game.service.mapper.PayInfoMapper">
+
+
+    <sql id="Column_list">id,pay_way,create_time,pay_time,pay_trade_no,product_price,pay_price,product_name,user_id,game_id,pay_status,game_order_no</sql>
+    <sql id="Column_add_list">pay_way,create_time,pay_time,pay_trade_no,product_price,pay_price,product_name,user_id,game_id,pay_status,game_order_no</sql>
+
+    <sql id="add_list">user_id,game_id,product_name,product_price,game_order_no,create_time</sql>
+
+    <resultMap id="ListTest" type="com.ppjun.game.entity.PayInfo">
+        <id column="id" property="pId"/>
+        <result column="pay_way" property="payWay"/>
+        <result column="create_time" property="createTime"/>
+        <result column="pay_time" property="payTime"/>
+        <result column="pay_trade_no" property="payTradeNo"/>
+        <result column="product_price" property="productPrice"/>
+        <result column="pay_price" property="payPrice"/>
+        <result column="product_name" property="productName"/>
+        <result column="user_id" property="userId"/>
+        <result column="game_id" property="gameId"/>
+        <result column="pay_status" property="payStatus"/>
+        <result column="game_order_no" property="gameOrderNo"/>
+    </resultMap>
+
+    <insert id="createOrder" parameterType="com.ppjun.game.entity.PayInfo">
+        <selectKey resultType="java.lang.Integer" order="AFTER" keyColumn="id">
+            SELECT LAST_INSERT_ID() AS id
+        </selectKey>
+        INSERT INTO pay_list (<include refid="add_list"/>) values
+        (#{userId},#{gameId},#{productName},#{productPrice},#{gameOrderNo},#{createTime})
+    </insert>
+
+    <select id="getProductName" parameterType="String" resultMap="ListTest">
+        SELECT
+        <include refid="add_list"/>
+        FROM pay_list
+        WHERE pay_list.game_order_no = #{orderNo}
+    </select>
+
+
+</mapper>

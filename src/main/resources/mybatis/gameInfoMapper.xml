@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.ppjun.game.dao.mapper.GameInfoMapper">
+<mapper namespace="com.ppjun.game.service.mapper.GameInfoMapper">
     <sql id="Column_list">id,game_name,app_id,app_key,game_time</sql>
     <sql id="Column_add_list">game_name,app_id,app_key,game_time</sql>
     <resultMap id="ListTest" type="com.ppjun.game.entity.GameInfo">
