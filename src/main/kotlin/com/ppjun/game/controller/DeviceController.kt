@@ -93,5 +93,34 @@ class DeviceController {
 
         return Response(Constant.SUCCESS_CODE, "获取成功", deviceList)
     }
+    /**
+     * 根据游戏id 查找设备，分页
+     */
+    @PostMapping("/device/page")
+    fun getDeviceByPage(@RequestParam map: HashMap<String, String>): Response {
+        val token = map["user_token"]
+        val gameId = map["game_id"]
+        val page = map["page"]
+        if (token.isNullOrEmpty()) {
+            return Response(Constant.ERROR_CODE, "token 为空", "")
+        }
+        if (gameId.isNullOrEmpty()) {
+            return Response(Constant.ERROR_CODE, "gameId 为空", "")
+        }
+        if (page.isNullOrEmpty()) {
+            return Response(Constant.ERROR_CODE, "page 为空", "")
+        }
+        val adminList = adminService.getAdminByToken(token!!)
+        if (adminList.isEmpty()) {
+            return Response(Constant.ERROR_CODE, "找不到游戏", "")
+        }
+
+        val deviceListPair= deviceService.getDeviceByIdByPage(page!!.toInt(),requireNotNull(gameId))
+
+        val deviceMap=HashMap<String,Any>()
+        deviceMap["list"]= deviceListPair.first
+        deviceMap["page"]= deviceListPair.second
+        return Response(Constant.SUCCESS_CODE, "获取成功", deviceMap)
+    }
 
 }

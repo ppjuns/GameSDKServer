@@ -1,5 +1,9 @@
 package com.ppjun.game.service
 
+import com.alibaba.druid.sql.PagerUtils
+import com.github.pagehelper.PageHelper
+import com.github.pagehelper.PageInfo
+import com.ppjun.game.base.Constant
 import com.ppjun.game.service.mapper.UserInfoMapper
 import com.ppjun.game.entity.UserInfo
 import org.springframework.beans.factory.annotation.Autowired
@@ -12,6 +16,12 @@ class UserService : UserInfoMapper {
         return userInfoMapper.getUserByGameId(gameId)
     }
 
+     fun getUserByGameIdByPage(page:Int,gameId: String): Pair<List<UserInfo>,Int> {
+        PageHelper.startPage<UserInfo>(page, Constant.PAGE_SIZE)
+         val userList=userInfoMapper.getUserByGameId(gameId)
+        val userInfos= PageInfo<UserInfo>(userList)
+        return Pair(userInfos.list,userInfos.pages)
+    }
     override fun updateUserToken(openId: String, newToken: String) {
         return userInfoMapper.updateUserToken(openId,newToken)
     }

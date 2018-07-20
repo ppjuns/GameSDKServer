@@ -9,6 +9,8 @@ import com.ppjun.game.util.MD5Util
 import com.ppjun.game.util.TimeUtil.Companion.getCurrentTime
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration
+import org.springframework.transaction.TransactionDefinition
+import org.springframework.transaction.support.DefaultTransactionDefinition
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
@@ -30,13 +32,41 @@ class GameController {
      * 获取全部游戏,通过admin的token获取
      */
 
+    @PostMapping("/game/page")
+    fun getGameByPage(@RequestParam map: HashMap<String, String>): Response {
+
+        val token = map["user_token"]
+        val page = map["page"]
+        if (token.isNullOrEmpty()) {
+            return Response(Constant.ERROR_CODE, "token 为空", "")
+        }
+        if (page.isNullOrEmpty()) {
+            return Response(Constant.ERROR_CODE, "page 为空", "")
+        }
+        val adminList = adminService.getAdminByToken(token!!)
+        if (adminList.isEmpty()) {
+            return Response(Constant.ERROR_CODE, "找不到游戏", "")
+        }
+        val gameListPair = gameService.getGameByPage(page!!.toInt())
+        return if (gameListPair.first.isEmpty()) {
+            Response(Constant.SUCCESS_CODE, "无游戏", "")
+        } else {
+            val pageMap = HashMap<String, Any>()
+            pageMap["list"] = gameListPair.first
+            pageMap["page"] = gameListPair.second
+            Response(Constant.SUCCESS_CODE, "成功", pageMap)
+        }
+    }
+
     @PostMapping("/game/all")
     fun allGame(@RequestParam map: HashMap<String, String>): Response {
 
         val token = map["user_token"]
+
         if (token.isNullOrEmpty()) {
             return Response(Constant.ERROR_CODE, "token 为空", "")
         }
+
         val adminList = adminService.getAdminByToken(token!!)
         if (adminList.isEmpty()) {
             return Response(Constant.ERROR_CODE, "找不到游戏", "")
@@ -79,7 +109,7 @@ class GameController {
 
 
     @PostMapping("/game/delete")
-    fun deleteGame(@RequestParam map:HashMap<String,String>):Response{
+    fun deleteGame(@RequestParam map: HashMap<String, String>): Response {
 
         val gId = map["id"]
         if (gId.isNullOrEmpty()) {
@@ -95,6 +125,11 @@ class GameController {
         }
 
         val size = gameService.deleteGame(gId!!)
+
+        val transaction=DefaultTransactionDefinition()
+        transaction.propagationBehavior=TransactionDefinition.PROPAGATION_REQUIRED
+
+
         return Response(Constant.SUCCESS_CODE, "删除成功", size)
     }
 
@@ -119,8 +154,6 @@ class GameController {
         val size = gameService.modifyGame(gId!!, gameName!!, getCurrentTime())
         return Response(Constant.SUCCESS_CODE, "修改成功", size)
     }
-
-
 
 
 }

@@ -57,4 +57,5 @@ dependencies {
     compile group: 'io.github.openfeign', name: 'feign-gson', version: '9.7.0'
     compile group: 'com.alipay.sdk', name: 'alipay-sdk-java', version: '3.3.4.ALL'
     compile group: 'org.springframework.security', name: 'spring-security-rsa', version: '1.0.5.RELEASE'
+    compile group: 'com.github.pagehelper', name: 'pagehelper-spring-boot-starter', version: '1.2.5'
 }

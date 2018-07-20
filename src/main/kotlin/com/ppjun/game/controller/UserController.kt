@@ -134,18 +134,63 @@ class UserController {
 
         val token = map["user_token"]
         val gameId = map["game_id"]
+
         if (token.isNullOrEmpty()) {
             return Response(Constant.ERROR_CODE, "token 为空", "")
         }
         if (gameId.isNullOrEmpty()) {
             return Response(Constant.ERROR_CODE, "gameId 为空", "")
         }
+
         val adminList = adminService.getAdminByToken(token!!)
         if (adminList.isEmpty()) {
             return Response(Constant.ERROR_CODE, "找不到游戏", "")
         }
-        val userList = userService.getUserByGameId(gameId!!)
+
+
+        val userList = userService.getUserByGameId( gameId!!)
+
+
+
         return Response(SUCCESS_CODE, "获取成功", userList)
+
+    }
+
+
+    /**
+     * 根据gameid
+     * 获取用户列表
+     */
+
+    @PostMapping("/user/page")
+    fun getUserByGameIdByPage(@RequestParam map: HashMap<String, String>): Response {
+
+        val token = map["user_token"]
+        val gameId = map["game_id"]
+        val page = map["page"]
+        if (token.isNullOrEmpty()) {
+            return Response(Constant.ERROR_CODE, "token 为空", "")
+        }
+        if (gameId.isNullOrEmpty()) {
+            return Response(Constant.ERROR_CODE, "gameId 为空", "")
+        }
+        if (page.isNullOrEmpty()) {
+            return Response(Constant.ERROR_CODE, "page 为空", "")
+        }
+        val adminList = adminService.getAdminByToken(token!!)
+        if (adminList.isEmpty()) {
+            return Response(Constant.ERROR_CODE, "找不到游戏", "")
+        }
+
+
+        val userListPair = userService.getUserByGameIdByPage(page!!.toInt(), gameId!!)
+
+
+        val userMap = HashMap<String, Any>()
+        userMap["list"] = userListPair.first
+        userMap["page"] = userListPair.second
+        return Response(SUCCESS_CODE, "获取成功", userMap)
+
 
     }
 }

@@ -8,4 +8,5 @@ data class GameInfo(
       var gameTime:String="",
       var users: ArrayList<UserInfo> = arrayListOf(),
       var devices: ArrayList<DeviceInfo> = arrayListOf()
+
 )

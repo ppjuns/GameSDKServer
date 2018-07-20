@@ -155,7 +155,7 @@ class PayController {
      */
     @PostMapping("/pay/wechat/notify")
     fun wechatNotify(@RequestParam map: HashMap<String, String>): String {
-        return ""
+        return "wechat/notify"
     }
 
     /**
@@ -163,7 +163,7 @@ class PayController {
      */
     @PostMapping("/pay/alipay/notify")
     fun alipayNotify(@RequestParam map: HashMap<String, String>): String {
-        return ""
+        return "alipay/notify"
     }
 
     @PostMapping("/pay/alipay")

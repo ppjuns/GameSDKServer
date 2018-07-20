@@ -52,11 +52,13 @@
     </update>
     
     <delete id="deleteGame" parameterType="String">
+        SET foreign_key_checks = 0
         DELETE
         FROM
         game_list
         WHERE
         game_list.id = #{gId}
+        SET foreign_key_checks = 1
     </delete>
 
 
