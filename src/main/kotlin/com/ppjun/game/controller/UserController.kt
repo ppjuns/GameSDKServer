@@ -193,4 +193,9 @@ class UserController {
 
 
     }
+
+
+     fun deleteUserByGameId(gameId:String){
+          userService.deleteUserByGameId(gameId)
+    }
 }

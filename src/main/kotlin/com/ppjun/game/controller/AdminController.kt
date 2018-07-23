@@ -21,9 +21,11 @@ class AdminController {
     lateinit var adminService: AdminService
 
 
+
+
     @GetMapping("/admin")
     fun admin(): Response {
-      return   Response(ERROR_CODE, "用户名不存在", "")
+        return Response(ERROR_CODE, "用户名不存在", "")
     }
 
     @PostMapping("/admin/login")

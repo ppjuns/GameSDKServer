@@ -123,4 +123,8 @@ class DeviceController {
         return Response(Constant.SUCCESS_CODE, "获取成功", deviceMap)
     }
 
+    fun deleteDeviceByGameId(gameId:String){
+        deviceService.deleteDeviceByGameId(gameId)
+    }
+
 }

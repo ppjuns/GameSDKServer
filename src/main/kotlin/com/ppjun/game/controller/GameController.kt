@@ -3,13 +3,13 @@ package com.ppjun.game.controller
 import com.ppjun.game.base.Constant
 import com.ppjun.game.entity.GameInfo
 import com.ppjun.game.entity.Response
-import com.ppjun.game.service.AdminService
-import com.ppjun.game.service.GameService
+import com.ppjun.game.service.*
 import com.ppjun.game.util.MD5Util
 import com.ppjun.game.util.TimeUtil.Companion.getCurrentTime
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration
 import org.springframework.transaction.TransactionDefinition
+import org.springframework.transaction.annotation.Transactional
 import org.springframework.transaction.support.DefaultTransactionDefinition
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestParam
@@ -23,6 +23,15 @@ class GameController {
 
     @Autowired
     lateinit var gameService: GameService
+
+    @Autowired
+    lateinit var userService: UserService
+
+    @Autowired
+    lateinit var deviceService: DeviceService
+
+    @Autowired
+    lateinit var payService: PayService
 
     @Autowired
     lateinit var adminService: AdminService
@@ -123,14 +132,22 @@ class GameController {
         if (adminList.isEmpty()) {
             return Response(Constant.ERROR_CODE, "找不到游戏", "")
         }
+        //删除其他表数据，再删除game表
+        return deleteGame(requireNotNull(gId))
+    }
 
-        val size = gameService.deleteGame(gId!!)
+    @Transactional
+    fun deleteGame(gameId: String):Response {
+        //删除user表gameid
+        //删除device表gameid
+        //删除pay表gameid
+        userService.deleteUserByGameId(gameId)
+        deviceService.deleteDeviceByGameId(gameId)
+        payService.deletePayInfoByGameId(gameId)
+        gameService.deleteGame(gameId)
 
-        val transaction=DefaultTransactionDefinition()
-        transaction.propagationBehavior=TransactionDefinition.PROPAGATION_REQUIRED
+        return Response(Constant.SUCCESS_CODE, "删除成功","")
 
-
-        return Response(Constant.SUCCESS_CODE, "删除成功", size)
     }
 
     @PostMapping("/game/modify")

@@ -12,6 +12,10 @@ import org.springframework.stereotype.Service
 
 @Service
 class UserService : UserInfoMapper {
+    override fun deleteUserByGameId(gameId: String) {
+        return userInfoMapper.deleteUserByGameId(gameId)
+    }
+
     override fun getUserByGameId(gameId: String): List<UserInfo> {
         return userInfoMapper.getUserByGameId(gameId)
     }

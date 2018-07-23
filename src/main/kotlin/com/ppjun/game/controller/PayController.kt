@@ -6,6 +6,7 @@ import com.alipay.api.domain.AlipayTradeAppPayModel
 import com.alipay.api.internal.util.AlipaySignature
 import com.alipay.api.request.AlipayTradeAppPayRequest
 import com.ppjun.game.base.Constant
+import com.ppjun.game.base.Constant.Companion.ERROR_CODE
 import com.ppjun.game.base.Constant.Companion.SUCCESS_CODE
 import com.ppjun.game.base.Constant.Companion.WECHAT_MCH_KEY
 import com.ppjun.game.entity.OrderInfo
@@ -13,6 +14,7 @@ import com.ppjun.game.entity.PayInfo
 import com.ppjun.game.entity.Response
 import com.ppjun.game.http.HttpApi.Companion.WECHAT_PAY_URL
 import com.ppjun.game.http.PayServiceImpl
+import com.ppjun.game.service.AdminService
 import com.ppjun.game.service.GameService
 import com.ppjun.game.service.PayService
 import com.ppjun.game.service.UserService
@@ -44,6 +46,9 @@ class PayController {
     lateinit var payService: PayService
 
     lateinit var request: AlipayTradeAppPayRequest
+
+    @Autowired
+    lateinit var adminService: AdminService
 
     /**
      * 微信支付
@@ -245,5 +250,39 @@ class PayController {
         val flag = AlipaySignature.rsaCheckV1(params, Constant.ALIPAY_PUBLIC_KEY, "utf-8", "RSA2")
     }
 
+
+    @PostMapping("/pay/page")
+    fun getPayInfoByGameIdByPage(@RequestParam map: HashMap<String, String>): Response {
+        val token = map["user_token"]
+        val gameId = map["game_id"]
+        val page = map["page"]
+        if (token.isNullOrEmpty()) {
+            return Response(Constant.ERROR_CODE, "token 为空", "")
+        }
+        if (gameId.isNullOrEmpty()) {
+            return Response(Constant.ERROR_CODE, "gameId 为空", "")
+        }
+        if (page.isNullOrEmpty()) {
+            return Response(Constant.ERROR_CODE, "page 为空", "")
+        }
+
+        //通过token 获取管理员
+        val adminList = adminService.getAdminByToken(token!!)
+        if (adminList.isEmpty()) {
+            return Response(Constant.ERROR_CODE, "token 失效", "")
+        }
+        val payInfoPair = payService.getPayInfoByGameIdByPage(page!!.toInt(), gameId!!)
+
+
+        val payInfoMap = HashMap<String, Any>()
+        payInfoMap["list"] = payInfoPair.first
+        payInfoMap["page"] = payInfoPair.second
+        return Response(SUCCESS_CODE, "请求成功",payInfoMap)
+    }
+
+
+    fun deletePayInfoByGameId(gameId:String){
+       payService.deletePayInfoByGameId(gameId)
+    }
 
 }

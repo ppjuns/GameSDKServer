@@ -8,4 +8,7 @@ import org.apache.ibatis.annotations.Mapper
 interface PayInfoMapper {
     fun createOrder(payInfo:PayInfo)
     fun getProductName(orderNo:String):List<PayInfo>
+    fun deletePayInfoByGameId(gameId:String)
+    fun getPayInfo(gameId:String):List<PayInfo>
+
 }

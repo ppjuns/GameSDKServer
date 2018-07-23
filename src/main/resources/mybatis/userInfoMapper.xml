@@ -78,4 +78,12 @@
         WHERE user_list.game_id = #{gameId}
     </select>
 
+    <select id="deleteUserByGameId" parameterType="String">
+        DELETE
+        FROM
+        user_list
+        WHERE
+        user_list.game_id = #{gameId}
+    </select>
+
 </mapper>

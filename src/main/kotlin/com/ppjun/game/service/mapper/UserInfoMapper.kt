@@ -14,4 +14,5 @@ interface UserInfoMapper {
     fun getUserByToken(appId: String,token:String):List<UserInfo>
     fun updateUserToken(openId: String,newToken:String)
     fun getUserByGameId(gameId:String):List<UserInfo>
+    fun deleteUserByGameId(gameId:String)
 }

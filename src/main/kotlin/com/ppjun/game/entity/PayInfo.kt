@@ -11,7 +11,7 @@ data class PayInfo(
         val pId: Int = 0,
         val payWay: String = "",
         val payTime: String = "",
-        val tradeNo: String = "",
+        val payTradeNo: String = "",
         val payPrice: String = "",
         val payStatus: String = ""
 )

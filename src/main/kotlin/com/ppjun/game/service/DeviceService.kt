@@ -11,6 +11,10 @@ import org.springframework.stereotype.Service
 
 @Service
 class DeviceService : DeviceInfoMapper {
+    override fun deleteDeviceByGameId(gameId: String) {
+        return deviceInfoMapper.deleteDeviceByGameId(gameId)
+    }
+
     override fun getDeviceById(gameId: String): List<DeviceInfo> {
         return deviceInfoMapper.getDeviceById(gameId)
     }

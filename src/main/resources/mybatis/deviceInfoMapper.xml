@@ -46,5 +46,13 @@
         WHERE device_list.game_id = #{gameId}
     </select>
 
+    <select id="deleteDeviceByGameId" parameterType="String">
+        DELETE
+        FROM
+        device_list
+        WHERE
+        device_list.game_id = #{gameId}
+    </select>
+
 
 </mapper>
