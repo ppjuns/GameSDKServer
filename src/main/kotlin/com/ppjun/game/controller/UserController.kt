@@ -79,14 +79,18 @@ class UserController {
             userService.insertUser(user)
             Response(SUCCESS_CODE, SUCCESS_LOGIN, user)
         } else {
-
             //刷新token并返回
-            val newToken = MD5Util.getMD5(System.currentTimeMillis().toString() + appId + userName + userImg)
+            val newToken = generateToken(appId + userName + userImg)
             userService.updateUserToken(openId, newToken)
-            val newUserList = userService.getUserByAppId(appId!!, openId!!)
+            val newUserList = userService.getUserByAppId(appId, openId)
             Response(SUCCESS_CODE, SUCCESS_LOGIN, newUserList[0])
         }
 
+    }
+
+
+    fun generateToken(md5Str: String): String {
+        return MD5Util.getMD5(System.currentTimeMillis().toString() + md5Str)
     }
 
 
@@ -148,7 +152,7 @@ class UserController {
         }
 
 
-        val userList = userService.getUserByGameId( gameId!!)
+        val userList = userService.getUserByGameId(gameId!!)
 
 
 
@@ -195,7 +199,41 @@ class UserController {
     }
 
 
-     fun deleteUserByGameId(gameId:String){
-          userService.deleteUserByGameId(gameId)
+    fun deleteUserByGameId(gameId: String) {
+        userService.deleteUserByGameId(gameId)
     }
+
+
+    @PostMapping("/user/logout")
+    fun logout(@RequestParam map: HashMap<String, String>): Response {
+        val token = map["user_token"]
+        val appId = map["app_id"]
+        if (token.isNullOrEmpty()) {
+            return Response(Constant.ERROR_CODE, "token 为空", "")
+        }
+        if (appId.isNullOrEmpty()) {
+            return Response(Constant.ERROR_CODE, "appId 为空", "")
+        }
+
+        val gameList = gameService.getGameById(appId!!)
+
+        if (gameList.isEmpty()) {
+            return Response(ERROR_CODE, "没找到对应游戏", "")
+        }
+
+
+        val userList = userService.getUserByToken(appId, token!!)
+
+        return if (userList.isEmpty()) {
+            Response(ERROR_CODE, "token 已失效，重新登录", "")
+
+        } else {
+            //重新生成token
+            val newToken = generateToken(token)
+            userService.updateToken(token, newToken)
+            return Response(SUCCESS_CODE, "注销成功", "")
+        }
+
+    }
+
 }

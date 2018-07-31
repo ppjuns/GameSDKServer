@@ -10,5 +10,11 @@ class TimeUtil{
             val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
             return sdf.format(System.currentTimeMillis())
         }
+
+
+        fun getOrderCurrentTime(): String {
+            val sdf = SimpleDateFormat("yyyy-MM-ddHH:mm:ss")
+            return sdf.format(System.currentTimeMillis())
+        }
     }
 }

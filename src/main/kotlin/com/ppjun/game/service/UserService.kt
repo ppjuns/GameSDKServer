@@ -1,6 +1,6 @@
 package com.ppjun.game.service
 
-import com.alibaba.druid.sql.PagerUtils
+
 import com.github.pagehelper.PageHelper
 import com.github.pagehelper.PageInfo
 import com.ppjun.game.base.Constant
@@ -12,6 +12,11 @@ import org.springframework.stereotype.Service
 
 @Service
 class UserService : UserInfoMapper {
+    override fun updateToken(oldToken: String, newToken: String) {
+        return userInfoMapper.updateToken(oldToken,newToken)
+    }
+
+
     override fun deleteUserByGameId(gameId: String) {
         return userInfoMapper.deleteUserByGameId(gameId)
     }

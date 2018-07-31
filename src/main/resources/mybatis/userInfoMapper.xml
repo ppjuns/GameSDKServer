@@ -85,5 +85,13 @@
         WHERE
         user_list.game_id = #{gameId}
     </select>
+    <update id="updateToken" parameterType="String">
+        UPDATE
+        user_list
+        set
+        user_list.user_token = #{newToken}
+        where
+        user_list.user_token = #{oldToken}
+    </update>
 
 </mapper>

@@ -6,7 +6,6 @@ import com.alipay.api.domain.AlipayTradeAppPayModel
 import com.alipay.api.internal.util.AlipaySignature
 import com.alipay.api.request.AlipayTradeAppPayRequest
 import com.ppjun.game.base.Constant
-import com.ppjun.game.base.Constant.Companion.ERROR_CODE
 import com.ppjun.game.base.Constant.Companion.SUCCESS_CODE
 import com.ppjun.game.base.Constant.Companion.WECHAT_MCH_KEY
 import com.ppjun.game.entity.OrderInfo
@@ -110,7 +109,7 @@ class PayController {
      * sdk内订单,单位分 两位小数0.01
      */
     @PostMapping("/pay/order")
-    fun createOrder(@RequestParam map: HashMap<String, String>): Response {
+    fun generateOrder(@RequestParam map: HashMap<String, String>): Response {
         val productName = map["product_name"]
         val productPrice = map["product_price"]
         val appId = map["app_id"]
@@ -141,13 +140,11 @@ class PayController {
         if (userList.isEmpty()) {
             return Response(Constant.ERROR_CODE, "token 已失效，重新登录", "")
         }
-
-
         //userId, gameId, productName, productPrice, gameOrderNo, createTime
-        //订单号以当前时间+uid+商品名为原型,再md5
+        //订单号已时间戳为单位，再加上md5 uid
         val uId = userList[0].uId.toString()
-        val gameOrderNo = MD5Util.getMD5(System.currentTimeMillis().toString() + uId + productName)
-
+        val currentTime=TimeUtil.getOrderCurrentTime()
+        val gameOrderNo=currentTime+MD5Util.getMD5(currentTime+uId)
         val payInfo = PayInfo(uId, gameList[0].gId.toString(),
                 productName!!, productPrice!!, gameOrderNo, TimeUtil.getCurrentTime())
         payService.createOrder(payInfo)
@@ -171,40 +168,42 @@ class PayController {
         return "alipay/notify"
     }
 
+
+    /**
+     * 支付宝支付
+     */
     @PostMapping("/pay/alipay")
     fun payByAlipay(@RequestParam map: HashMap<String, String>): Response {
-
         // 拿到订单号查询，查询商品名，价格
         val orderNo = map["order_no"]
         if (orderNo.isNullOrEmpty()) {
             return Response(Constant.ERROR_CODE, "orderNo 为空", "")
         }
 
-        val time = TimeUtil.getCurrentTime()
+
         val payList = payService.getProductName(orderNo!!)
         if (payList.isEmpty()) {
             return Response(Constant.ERROR_CODE, "订单不存在", "")
         }
-
-        val notifyUrl = "/pay/alipay/notify"
-        val client = DefaultAlipayClient(notifyUrl, Constant.ALIPAY_APP_ID, Constant.ALIPAY_PRIVATE_KEY
+        val notifyUrl = "http://119.29.233.121:8080/game-0.0.1-SNAPSHOT/pay/alipay/notify"
+        val client = DefaultAlipayClient(notifyUrl, Constant.ALIPAY_APP_ID, Constant.PRIVATE_KEY
                 , "json", "utf-8", Constant.ALIPAY_PUBLIC_KEY, "RSA2")
         request = AlipayTradeAppPayRequest()
         val model = AlipayTradeAppPayModel()
-        model.body = payList[0].productName
-        model.outTradeNo = payList[0].gameOrderNo
-        model.timeoutExpress = "30m"
-        model.totalAmount = payList[0].productPrice
+        model.body = payList[0].productName  //商品名
+        model.outTradeNo = payList[0].gameOrderNo  //游戏内订单号
+        model.timeoutExpress = "30m"   //超时时间
+        model.totalAmount = payList[0].productPrice  //订单金额 分
         model.productCode = "QUICK_MESECURITY_PAY"
         request.bizModel = model
         request.notifyUrl = notifyUrl
         val response = client.sdkExecute(request)
-        return Response(SUCCESS_CODE, "请求成功", response)
+        return Response(SUCCESS_CODE, "请求成功", response.body)
     }
 
     @PostMapping("/pay/rsakey")
     fun generateRsaKey(@RequestParam map: HashMap<String, String>): Response {
-        val secret = RsaUtil.encryptDataByPrivateKey("nainai".toByteArray(), RsaUtil.keyStrToPrivate(Constant.PRIVATE_KEY)!!)
+        val secret = RsaUtil.encryptDataByPrivateKey("example".toByteArray(), RsaUtil.keyStrToPrivate(Constant.PRIVATE_KEY)!!)
         val artcle = RsaUtil.decryptDataByPublicKey(secret, RsaUtil.keyStrToPublicKey(Constant.PUBLIC_KEY)!!)
         return Response(SUCCESS_CODE, secret, String(artcle!!))
     }
